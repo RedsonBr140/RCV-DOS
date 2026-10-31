@@ -49,7 +49,6 @@ void kprintf(const char *format, ...) {
                 console_write(&c, 1);
                 break;
             }
-
             case 's': {
                 const char *str = va_arg(args, const char *);
 

@@ -26,7 +26,9 @@ C_SOURCES = \
     kernel/kernel_main.c \
     kernel/kprintf.c \
     drivers/console.c \
-    arch/riscv/sbi.c
+    arch/riscv/sbi.c \
+    kernel/firmware.c \
+    kernel/shell.c
 
 ASM_SOURCES = \
     arch/riscv/boot.S

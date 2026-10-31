@@ -1,8 +1,13 @@
 #include <stdint.h>
 #include <kernel/sbi.h>
 
-#define SBI_EXT_DBCN 0x4442434E
-#define SBI_DBCN_WRITE 0
+#define SBI_EXT_BASE              0x10
+#define SBI_BASE_GET_SPEC_VERSION 0x00
+#define SBI_BASE_GET_IMPL_ID      0x01
+#define SBI_BASE_PROBE_EXTENSION  0x03
+
+#define SBI_DBCN_WRITE 0x00
+#define SBI_DBCN_READ  0x01
 
 static struct sbiret sbi_call(
     unsigned long eid,
@@ -29,6 +34,34 @@ static struct sbiret sbi_call(
         .value = (long)a1
     };
 }
+struct sbiret sbi_get_impl_id(void) {
+    return sbi_call(
+        SBI_EXT_BASE,
+        SBI_BASE_GET_IMPL_ID,
+        0,
+        0,
+        0
+    );
+}
+struct sbiret sbi_get_spec_version(void) {
+    return sbi_call(
+        SBI_EXT_BASE,
+        SBI_BASE_GET_SPEC_VERSION,
+        0,
+        0,
+        0
+    );
+}
+
+struct sbiret sbi_probe_extension(long extension_id) {
+    return sbi_call(
+        SBI_EXT_BASE,
+        SBI_BASE_PROBE_EXTENSION,
+        extension_id,
+        0,
+        0
+    );
+}
 
 struct sbiret sbi_debug_console_write(
     size_t length,
@@ -40,5 +73,15 @@ struct sbiret sbi_debug_console_write(
         length,
         (unsigned long)(uintptr_t)buffer,
         0
+    );
+}
+
+struct sbiret sbi_debug_console_read(unsigned long num_bytes, unsigned long base_addr_lo, unsigned long base_addr_hi) {
+    return sbi_call(
+        SBI_EXT_DBCN,
+        SBI_DBCN_READ,
+        num_bytes,
+        base_addr_lo,
+        base_addr_hi
     );
 }
