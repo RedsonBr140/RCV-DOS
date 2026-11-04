@@ -16,6 +16,14 @@ CFLAGS = -march=$(ARCH) -mabi=$(ABI) \
          -O2 -Wall -Wextra \
          -Iinclude
 
+
+RCV_DOS_VERSION_MAJOR = 0
+RCV_DOS_VERSION_MINOR = 0
+RCV_DOS_VERSION_PATCH = 1
+RCV_DOS_VERSION_COMMIT = $(shell git rev-parse --short HEAD || echo "unknown")
+
+CFLAGS += -DRCV_DOS_VERSION='"$(RCV_DOS_VERSION_MAJOR).$(RCV_DOS_VERSION_MINOR).$(RCV_DOS_VERSION_PATCH)-$(RCV_DOS_VERSION_COMMIT)"'
+
 ASFLAGS = -march=$(ARCH) -mabi=$(ABI)
 
 LDFLAGS = -T linker.ld -nostdlib -static \
