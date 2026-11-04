@@ -16,15 +16,6 @@ void shell_start(void) {
     static char line_buffer[128];
     static size_t line_buffer_length;
     while(1) {
-        if (line_buffer_length > 0 && line_buffer[line_buffer_length] == '\n') {
-            line_buffer[line_buffer_length] = '\0'; // We have to remove the new line content from the buffer. Otherwise, we'll reach this if condition erroneously.
-            // TODO: Parse the command.
-            // When the parse function returns, we re-print the shell (fake) PS1
-            kprintf("\n"); // TEMP: Alledgely, the command is supposed to end with a \n if it messes with the stdio either way, so we shouldn't need this.
-            kprintf(PS1);
-            // Then "empty" the buffer.
-            line_buffer_length = 0;
-        }
         struct sbiret result = sbi_debug_console_read(
             sizeof(input_buffer),
             (unsigned long)(uintptr_t)input_buffer,
@@ -42,9 +33,12 @@ void shell_start(void) {
                         }
                         break;
                     case '\r':
-                        if (line_buffer_length < sizeof(line_buffer - 1)) {
-                            line_buffer[line_buffer_length] = '\n';
-                        }
+                        // TODO: Parse the command.
+                        // When the parse function returns, we re-print the shell (fake) PS1
+                        kprintf("\n"); // NOTE: Alledgely, the command is supposed to end with a \n if it messes with the stdio either way, so we shouldn't need this.
+                        kprintf(PS1);
+                        // Then "empty" the buffer.
+                        line_buffer_length = 0;
                         break;
                     case 'L':
                         kprintf("Pressing 'L' is a helper condition. Printing Line buffer:\n");
